@@ -114,9 +114,7 @@ function Index() {
     setSubmittedQuiz(false);
   };
 
-  const handleScheduleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
+  const postAgendamento = async (fotoBase64: string) => {
     try {
       await fetch(
         "https://script.google.com/macros/s/AKfycbzEpkXO2fMAiOagdoqCjGtFZD5900lPCDLcePy0JgQ7YAKYS41BgedFPqDuuRFIMJHXzw/exec",
@@ -124,7 +122,7 @@ function Index() {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(form),
+          body: JSON.stringify({ ...form, fotoVestimenta: fotoBase64 }),
         }
       );
       setScheduled(true);
@@ -134,6 +132,18 @@ function Index() {
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleScheduleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!fotoFile) return;
+    setSubmitting(true);
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64 = reader.result as string;
+      postAgendamento(base64);
+    };
+    reader.readAsDataURL(fotoFile);
   };
 
   return (

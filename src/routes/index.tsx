@@ -71,9 +71,23 @@ function Index() {
     motivo: "",
     hostNome: "",
     hostEmail: "",
+    fotoVestimenta: "",
   });
+  const [fotoPreview, setFotoPreview] = useState<string>("");
   const [scheduled, setScheduled] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      setForm((prev) => ({ ...prev, fotoVestimenta: result }));
+      setFotoPreview(result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const correctCount = useMemo(
     () => answers.reduce<number>((acc, a, i) => acc + (a === QUESTIONS[i].answer ? 1 : 0), 0),
@@ -435,6 +449,26 @@ function Index() {
                     />
                   </Field>
                 </div>
+                <Field label="Foto da vestimenta completa" required>
+                  <p className="mb-2 text-xs text-muted-foreground">
+                    Tire uma foto mostrando sua roupa completa para validação de segurança
+                  </p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    required
+                    onChange={handleFotoChange}
+                    className="block w-full text-sm text-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-navy file:px-4 file:py-2 file:text-sm file:font-semibold file:text-navy-foreground hover:file:opacity-90"
+                  />
+                  {fotoPreview && (
+                    <img
+                      src={fotoPreview}
+                      alt="Pré-visualização da vestimenta"
+                      className="mt-3 max-h-64 rounded-lg border border-border object-contain"
+                    />
+                  )}
+                </Field>
                 <button
                   type="submit"
                   disabled={submitting}

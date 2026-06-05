@@ -100,9 +100,26 @@ function Index() {
     setSubmittedQuiz(false);
   };
 
-  const handleScheduleSubmit = (e: React.FormEvent) => {
+  const handleScheduleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setScheduled(true);
+    setSubmitting(true);
+    try {
+      await fetch(
+        "https://script.google.com/macros/s/AKfycbzEpkXO2fMAiOagdoqCjGtFZD5900lPCDLcePy0JgQ7YAKYS41BgedFPqDuuRFIMJHXzw/exec",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
+      setScheduled(true);
+    } catch (err) {
+      console.error(err);
+      setScheduled(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

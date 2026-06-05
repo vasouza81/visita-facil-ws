@@ -449,6 +449,26 @@ function Index() {
                     />
                   </Field>
                 </div>
+                <Field label="Foto da vestimenta completa" required>
+                  <p className="mb-2 text-xs text-muted-foreground">
+                    Tire uma foto mostrando sua roupa completa para validação de segurança
+                  </p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    capture="environment"
+                    required
+                    onChange={handleFotoChange}
+                    className="block w-full text-sm text-foreground file:mr-3 file:rounded-lg file:border-0 file:bg-navy file:px-4 file:py-2 file:text-sm file:font-semibold file:text-navy-foreground hover:file:opacity-90"
+                  />
+                  {fotoPreview && (
+                    <img
+                      src={fotoPreview}
+                      alt="Pré-visualização da vestimenta"
+                      className="mt-3 max-h-64 rounded-lg border border-border object-contain"
+                    />
+                  )}
+                </Field>
                 <button
                   type="submit"
                   disabled={submitting}

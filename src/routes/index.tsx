@@ -71,9 +71,23 @@ function Index() {
     motivo: "",
     hostNome: "",
     hostEmail: "",
+    fotoVestimenta: "",
   });
+  const [fotoPreview, setFotoPreview] = useState<string>("");
   const [scheduled, setScheduled] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+
+  const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const result = reader.result as string;
+      setForm((prev) => ({ ...prev, fotoVestimenta: result }));
+      setFotoPreview(result);
+    };
+    reader.readAsDataURL(file);
+  };
 
   const correctCount = useMemo(
     () => answers.reduce<number>((acc, a, i) => acc + (a === QUESTIONS[i].answer ? 1 : 0), 0),

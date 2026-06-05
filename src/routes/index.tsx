@@ -73,6 +73,7 @@ function Index() {
     hostEmail: "",
     fotoVestimenta: "",
   });
+  const [fotoFile, setFotoFile] = useState<File | null>(null);
   const [fotoPreview, setFotoPreview] = useState<string>("");
   const [scheduled, setScheduled] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -80,11 +81,10 @@ function Index() {
   const handleFotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    setFotoFile(file);
     const reader = new FileReader();
     reader.onloadend = () => {
-      const result = reader.result as string;
-      setForm((prev) => ({ ...prev, fotoVestimenta: result }));
-      setFotoPreview(result);
+      setFotoPreview(reader.result as string);
     };
     reader.readAsDataURL(file);
   };

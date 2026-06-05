@@ -98,7 +98,7 @@ function Index() {
 
   const correctCount = useMemo(
     () => answers.reduce<number>((acc, a, i) => acc + (a === QUESTIONS[i].answer ? 1 : 0), 0),
-    [answers]
+    [answers],
   );
   const approved = submittedQuiz && correctCount === QUESTIONS.length;
 
@@ -141,7 +141,7 @@ function Index() {
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ ...form, fotoVestimenta: base64String }),
-        }
+        },
       );
       setScheduled(true);
     } catch (err) {

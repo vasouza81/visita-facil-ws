@@ -62,13 +62,18 @@ function Index() {
   const [submittedQuiz, setSubmittedQuiz] = useState(false);
   const [form, setForm] = useState({
     nome: "",
-    documento: "",
-    empresa: "",
     email: "",
+    telefone: "",
+    instituicao: "",
+    numeroVisitantes: "",
     data: "",
+    horario: "",
     motivo: "",
+    hostNome: "",
+    hostEmail: "",
   });
   const [scheduled, setScheduled] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const correctCount = useMemo(
     () => answers.reduce<number>((acc, a, i) => acc + (a === QUESTIONS[i].answer ? 1 : 0), 0),

@@ -1,6 +1,6 @@
 {
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "bun run build",
+  "outputDirectory": ".output/public",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]

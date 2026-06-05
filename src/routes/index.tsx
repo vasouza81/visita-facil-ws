@@ -62,13 +62,18 @@ function Index() {
   const [submittedQuiz, setSubmittedQuiz] = useState(false);
   const [form, setForm] = useState({
     nome: "",
-    documento: "",
-    empresa: "",
     email: "",
+    telefone: "",
+    instituicao: "",
+    numeroVisitantes: "",
     data: "",
+    horario: "",
     motivo: "",
+    hostNome: "",
+    hostEmail: "",
   });
   const [scheduled, setScheduled] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const correctCount = useMemo(
     () => answers.reduce<number>((acc, a, i) => acc + (a === QUESTIONS[i].answer ? 1 : 0), 0),
@@ -95,9 +100,26 @@ function Index() {
     setSubmittedQuiz(false);
   };
 
-  const handleScheduleSubmit = (e: React.FormEvent) => {
+  const handleScheduleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setScheduled(true);
+    setSubmitting(true);
+    try {
+      await fetch(
+        "https://script.google.com/macros/s/AKfycbzEpkXO2fMAiOagdoqCjGtFZD5900lPCDLcePy0JgQ7YAKYS41BgedFPqDuuRFIMJHXzw/exec",
+        {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(form),
+        }
+      );
+      setScheduled(true);
+    } catch (err) {
+      console.error(err);
+      setScheduled(true);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -317,7 +339,7 @@ function Index() {
                 <div className="text-4xl">🎉</div>
                 <h3 className="mt-3 text-xl font-bold text-navy">Solicitação enviada!</h3>
                 <p className="mt-2 text-muted-foreground">
-                  Obrigado, <strong>{form.nome}</strong>. Você receberá a confirmação em <strong>{form.email}</strong>.
+                  Aguarde a confirmação por e-mail.
                 </p>
               </div>
             ) : (
@@ -334,28 +356,38 @@ function Index() {
                       className={inputCls}
                     />
                   </Field>
-                  <Field label="Documento (RG/CPF)" required>
-                    <input
-                      required
-                      value={form.documento}
-                      onChange={(e) => setForm({ ...form, documento: e.target.value })}
-                      className={inputCls}
-                    />
-                  </Field>
-                  <Field label="Empresa" required>
-                    <input
-                      required
-                      value={form.empresa}
-                      onChange={(e) => setForm({ ...form, empresa: e.target.value })}
-                      className={inputCls}
-                    />
-                  </Field>
                   <Field label="E-mail" required>
                     <input
                       type="email"
                       required
                       value={form.email}
                       onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      className={inputCls}
+                    />
+                  </Field>
+                  <Field label="Telefone" required>
+                    <input
+                      required
+                      value={form.telefone}
+                      onChange={(e) => setForm({ ...form, telefone: e.target.value })}
+                      className={inputCls}
+                    />
+                  </Field>
+                  <Field label="Instituição" required>
+                    <input
+                      required
+                      value={form.instituicao}
+                      onChange={(e) => setForm({ ...form, instituicao: e.target.value })}
+                      className={inputCls}
+                    />
+                  </Field>
+                  <Field label="Número de visitantes" required>
+                    <input
+                      type="number"
+                      min={1}
+                      required
+                      value={form.numeroVisitantes}
+                      onChange={(e) => setForm({ ...form, numeroVisitantes: e.target.value })}
                       className={inputCls}
                     />
                   </Field>
@@ -368,26 +400,47 @@ function Index() {
                       className={inputCls}
                     />
                   </Field>
-                  <Field label="Unidade Wilson Sons" required>
-                    <select
+                  <Field label="Horário" required>
+                    <input
+                      type="time"
+                      required
+                      value={form.horario}
+                      onChange={(e) => setForm({ ...form, horario: e.target.value })}
+                      className={inputCls}
+                    />
+                  </Field>
+                  <Field label="Motivo da visita" required>
+                    <input
                       required
                       value={form.motivo}
                       onChange={(e) => setForm({ ...form, motivo: e.target.value })}
                       className={inputCls}
-                    >
-                      <option value="">Selecione...</option>
-                      <option>Terminal Tecon Rio Grande</option>
-                      <option>Terminal Tecon Salvador</option>
-                      <option>Estaleiro Guarujá</option>
-                      <option>Sede Rio de Janeiro</option>
-                    </select>
+                    />
+                  </Field>
+                  <Field label="Nome do anfitrião (host)" required>
+                    <input
+                      required
+                      value={form.hostNome}
+                      onChange={(e) => setForm({ ...form, hostNome: e.target.value })}
+                      className={inputCls}
+                    />
+                  </Field>
+                  <Field label="E-mail do anfitrião" required>
+                    <input
+                      type="email"
+                      required
+                      value={form.hostEmail}
+                      onChange={(e) => setForm({ ...form, hostEmail: e.target.value })}
+                      className={inputCls}
+                    />
                   </Field>
                 </div>
                 <button
                   type="submit"
-                  className="mt-2 w-full rounded-lg bg-navy px-6 py-3 font-semibold text-navy-foreground transition hover:opacity-90 sm:w-auto sm:justify-self-end"
+                  disabled={submitting}
+                  className="mt-2 w-full rounded-lg bg-navy px-6 py-3 font-semibold text-navy-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:justify-self-end"
                 >
-                  Enviar solicitação
+                  {submitting ? "Enviando..." : "Enviar solicitação"}
                 </button>
               </form>
             )}

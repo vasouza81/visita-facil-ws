@@ -490,7 +490,7 @@ function Index() {
                   disabled={submitting}
                   className="mt-2 w-full rounded-lg bg-navy px-6 py-3 font-semibold text-navy-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:justify-self-end"
                 >
-                  {submitting ? "Enviando..." : "Enviar solicitação"}
+                  {submitting ? "Analisando vestimenta..." : "Enviar solicitação"}
                 </button>
               </form>
             )}

@@ -57,6 +57,13 @@ const QUESTIONS: Question[] = [
   },
 ];
 
+const toBase64 = (file: File) =>
+  new Promise<string>((resolve) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+  });
+
 function Index() {
   const [answers, setAnswers] = useState<(number | null)[]>([null, null, null]);
   const [submittedQuiz, setSubmittedQuiz] = useState(false);
@@ -91,7 +98,7 @@ function Index() {
 
   const correctCount = useMemo(
     () => answers.reduce<number>((acc, a, i) => acc + (a === QUESTIONS[i].answer ? 1 : 0), 0),
-    [answers]
+    [answers],
   );
   const approved = submittedQuiz && correctCount === QUESTIONS.length;
 
@@ -114,16 +121,27 @@ function Index() {
     setSubmittedQuiz(false);
   };
 
-  const postAgendamento = async (fotoBase64: string) => {
+  const handleScheduleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!fotoFile) {
+      alert("Por favor, selecione uma foto da vestimenta completa.");
+      return;
+    }
+
+    setSubmitting(true);
+
     try {
+      const base64String = await toBase64(fotoFile);
+
       await fetch(
         "https://script.google.com/macros/s/AKfycbzEpkXO2fMAiOagdoqCjGtFZD5900lPCDLcePy0JgQ7YAKYS41BgedFPqDuuRFIMJHXzw/exec",
         {
           method: "POST",
           mode: "no-cors",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ ...form, fotoVestimenta: fotoBase64 }),
-        }
+          body: JSON.stringify({ ...form, fotoVestimenta: base64String }),
+        },
       );
       setScheduled(true);
     } catch (err) {
@@ -132,18 +150,6 @@ function Index() {
     } finally {
       setSubmitting(false);
     }
-  };
-
-  const handleScheduleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!fotoFile) return;
-    setSubmitting(true);
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64 = reader.result as string;
-      postAgendamento(base64);
-    };
-    reader.readAsDataURL(fotoFile);
   };
 
   return (
@@ -484,7 +490,7 @@ function Index() {
                   disabled={submitting}
                   className="mt-2 w-full rounded-lg bg-navy px-6 py-3 font-semibold text-navy-foreground transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto sm:justify-self-end"
                 >
-                  {submitting ? "Enviando..." : "Enviar solicitação"}
+                  {submitting ? "Analisando vestimenta..." : "Enviar solicitação"}
                 </button>
               </form>
             )}

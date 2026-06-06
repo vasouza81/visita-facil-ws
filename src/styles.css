@@ -23,6 +23,12 @@
   --color-navy-foreground: #ffffff;
   --color-orange: #FF6B35;
   --color-orange-foreground: #ffffff;
+  --color-success: #16a34a;
+  --color-success-foreground: #ffffff;
+  --color-danger: #dc2626;
+  --color-danger-foreground: #ffffff;
+  --color-graylight: #F5F5F5;
+
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);

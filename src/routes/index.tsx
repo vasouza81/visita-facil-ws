@@ -264,7 +264,7 @@ function Index() {
             <div className="relative aspect-video w-full">
               <iframe
                 className="absolute inset-0 h-full w-full"
-                src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+                src="https://www.youtube.com/embed/kZGNypHb0nw"
                 title="Vídeo de segurança Wilson Sons"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
